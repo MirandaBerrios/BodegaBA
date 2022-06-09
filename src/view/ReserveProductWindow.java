@@ -5,15 +5,17 @@
  */
 package view;
 
+import java.util.ArrayList;
+import javax.swing.table.DefaultTableModel;
+import object.Product;
+
 /**
  *
  * @author jocpa
  */
 public class ReserveProductWindow extends javax.swing.JFrame {
 
-    /**
-     * Creates new form ReserveProductWindow
-     */
+        
     public ReserveProductWindow() {
         initComponents();
     }
@@ -32,7 +34,13 @@ public class ReserveProductWindow extends javax.swing.JFrame {
         jLabel1 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowOpened(java.awt.event.WindowEvent evt) {
+                formWindowOpened(evt);
+            }
+        });
 
+        TableReserveStock.setFont(new java.awt.Font("Dialog", 0, 14)); // NOI18N
         TableReserveStock.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null, null, null, null},
@@ -78,6 +86,57 @@ public class ReserveProductWindow extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
+       try {
+            
+             
+            ArrayList<service.Product> listaSoap  = new ArrayList<>(getAllProduct());
+            ArrayList<service.Product> lista = new ArrayList<>();
+            listaSoap.forEach(item ->{
+                if(!item.getIsAvailable().equalsIgnoreCase("N")){
+                    item.setValue("$" + item.getValue());
+                    lista.add(item);
+                }
+            });
+            
+            
+            if (lista.isEmpty()) {
+                javax.swing.JOptionPane.showMessageDialog(this, "No hay datos, verifica tu escritura");
+            } else {
+                
+                
+                DefaultTableModel modelo = new DefaultTableModel();
+                
+                modelo.addColumn("Id producto");
+                modelo.addColumn("Nombre");
+                modelo.addColumn("Marca");
+                modelo.addColumn("Modelo");
+                modelo.addColumn("Value");
+                modelo.addColumn("isAvailable");
+                
+                
+               
+
+                for (service.Product item : lista) {                    
+                    Object[] fila = new Object[7]; // le pasamos la cantida de columnas
+                    fila[0] = item.getId();
+                    fila[1] = item.getName();
+                    fila[2] = item.getMark(); 
+                    fila[3] = item.getModel();
+                    fila[4] = item.getValue();
+                    fila[5] = item.getIsAvailable();
+                                   
+
+                    modelo.addRow(fila);
+                 }
+            this.TableReserveStock.setModel(modelo);
+            
+        }
+        } catch (Exception e) {
+            javax.swing.JOptionPane.showMessageDialog(this,"No se ha podido cargar la data" +e.getMessage());
+        }
+    }//GEN-LAST:event_formWindowOpened
+
     /**
      * @param args the command line arguments
      */
@@ -111,6 +170,8 @@ public class ReserveProductWindow extends javax.swing.JFrame {
                 new ReserveProductWindow().setVisible(true);
             }
         });
+        
+        
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -118,4 +179,11 @@ public class ReserveProductWindow extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel1;
     private javax.swing.JScrollPane jScrollPane1;
     // End of variables declaration//GEN-END:variables
+
+    private static java.util.List<service.Product> getAllProduct() {
+        service.ProductService_Service service = new service.ProductService_Service();
+        service.ProductService port = service.getProductServicePort();
+        return port.getAllProduct();
+    }
+
 }

@@ -38,7 +38,6 @@ public class ShippingGuideWindow extends javax.swing.JFrame {
         jScrollPane1 = new javax.swing.JScrollPane();
         tbShippingGuide = new javax.swing.JTable();
         btnImprimir = new javax.swing.JButton();
-        btnObtenerStock = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setPreferredSize(new java.awt.Dimension(1400, 900));
@@ -46,29 +45,33 @@ public class ShippingGuideWindow extends javax.swing.JFrame {
             public void windowActivated(java.awt.event.WindowEvent evt) {
                 formWindowActivated(evt);
             }
+            public void windowOpened(java.awt.event.WindowEvent evt) {
+                formWindowOpened(evt);
+            }
         });
 
         tbShippingGuide.setAutoCreateRowSorter(true);
+        tbShippingGuide.setFont(new java.awt.Font("Dialog", 0, 14)); // NOI18N
         tbShippingGuide.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null}
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
             },
             new String [] {
-                "Nro Guia despacho", "Nro Factura", "Cliente", "Producto", "Estado Guia"
+                "Nro Guia despacho", "Cliente", "Producto", "Estado Guia"
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class
+                java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class
             };
             boolean[] canEdit = new boolean [] {
-                false, false, false, false, true
+                false, false, false, true
             };
 
             public Class getColumnClass(int columnIndex) {
@@ -89,17 +92,6 @@ public class ShippingGuideWindow extends javax.swing.JFrame {
             }
         });
 
-        btnObtenerStock.setText("Obtener Stock");
-        btnObtenerStock.setToolTipText("");
-        btnObtenerStock.setAlignmentY(0.0F);
-        btnObtenerStock.setAutoscrolls(true);
-        btnObtenerStock.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        btnObtenerStock.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnObtenerStockActionPerformed(evt);
-            }
-        });
-
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -108,12 +100,8 @@ public class ShippingGuideWindow extends javax.swing.JFrame {
                 .addGap(65, 65, 65)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(btnImprimir)
-                    .addComponent(jScrollPane1))
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 711, Short.MAX_VALUE))
                 .addGap(39, 39, 39))
-            .addGroup(layout.createSequentialGroup()
-                .addGap(360, 360, 360)
-                .addComponent(btnObtenerStock, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGap(343, 343, 343))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -122,9 +110,7 @@ public class ShippingGuideWindow extends javax.swing.JFrame {
                 .addComponent(btnImprimir)
                 .addGap(18, 18, 18)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 165, Short.MAX_VALUE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(btnObtenerStock)
-                .addGap(33, 33, 33))
+                .addGap(77, 77, 77))
         );
 
         pack();
@@ -134,31 +120,35 @@ public class ShippingGuideWindow extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_btnImprimirActionPerformed
 
-    private void btnObtenerStockActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnObtenerStockActionPerformed
-    try {
-            
-            ArrayList<ReleaseOrderReport> lista = getAllReleaseOrderReportByQuery();
+    private void formWindowActivated(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowActivated
+        // TODO add your handling code here:
+    }//GEN-LAST:event_formWindowActivated
 
+    private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
+       try {
+            
+            
+            ArrayList<service.ReleaseOrder> lista = new ArrayList<>(getAllReleasedOrder());
+            
+            
             if (lista.isEmpty()) {
                 javax.swing.JOptionPane.showMessageDialog(this, "No hay datos, verifica tu escritura");
             } else {
 
                 DefaultTableModel modelo = new DefaultTableModel();
                 modelo.addColumn("Nro Guia Despacho");
-                modelo.addColumn("Nro Factura");
                 modelo.addColumn("Cliente");
                 modelo.addColumn("Producto");
                 modelo.addColumn("Estado Guia");
                
 
-                for (ReleaseOrderReport item : lista) {
+                for (service.ReleaseOrder item : lista) {
 
                     Object[] fila = new Object[7]; // le pasamos la cantida de columnas
-                    fila[0] = item.getIdReleaseOrder();
-                    fila[1] = item.getIdInvoice();
-                    fila[2] = item.getFullNameCustomer();
-                    fila[3] = item.getNameProduct();
-                    fila[4] = item.getStateReleaseOrder();
+                    fila[0] = item.getId();
+                    fila[1] = item.getIdCustomer();
+                    fila[2] = item.getIdProducto();
+                    fila[3] = item.getIdState();
                    
 
                     modelo.addRow(fila);
@@ -168,11 +158,7 @@ public class ShippingGuideWindow extends javax.swing.JFrame {
         } catch (Exception e) {
             javax.swing.JOptionPane.showMessageDialog(this,"No se ha podido realiza la búsqueda" +e.getMessage());
         }
-    }//GEN-LAST:event_btnObtenerStockActionPerformed
-
-    private void formWindowActivated(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowActivated
-        // TODO add your handling code here:
-    }//GEN-LAST:event_formWindowActivated
+    }//GEN-LAST:event_formWindowOpened
 
     /**
      * @param args the command line arguments
@@ -208,12 +194,19 @@ public class ShippingGuideWindow extends javax.swing.JFrame {
                 new ShippingGuideWindow().setVisible(true);
             }
         });
+        
+        
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnImprimir;
-    private javax.swing.JButton btnObtenerStock;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable tbShippingGuide;
     // End of variables declaration//GEN-END:variables
+
+    private static java.util.List<service.ReleaseOrder> getAllReleasedOrder() {
+        service.ReleaseOrderService_Service service = new service.ReleaseOrderService_Service();
+        service.ReleaseOrderService port = service.getReleaseOrderServicePort();
+        return port.getAllReleasedOrder();
+    }
 }

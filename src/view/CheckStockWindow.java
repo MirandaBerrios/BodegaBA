@@ -5,12 +5,9 @@
  */
 package view;
 
-import controller.ProductController;
 import static controller.ProductController.getAllProductByQuery;
 import java.util.ArrayList;
 import javax.swing.table.DefaultTableModel;
-import object.ReleaseOrderReport;
-import static controller.ReleaseOrderController.getAllReleaseOrderReportByQuery;
 import object.Product;
 /**
  *
@@ -18,9 +15,7 @@ import object.Product;
  */
 public class CheckStockWindow extends javax.swing.JFrame {
 
-    /**
-     * Creates new form CheckStockWindows
-     */
+    
     public CheckStockWindow() {
         initComponents();
     }
@@ -46,6 +41,7 @@ public class CheckStockWindow extends javax.swing.JFrame {
             }
         });
 
+        TableStock.setFont(new java.awt.Font("Dialog", 0, 14)); // NOI18N
         TableStock.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
@@ -115,7 +111,8 @@ public class CheckStockWindow extends javax.swing.JFrame {
     private void btnConsultarStockActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnConsultarStockActionPerformed
            try {
             
-            ArrayList<Product> lista = getAllProductByQuery();
+
+            ArrayList<service.Product> lista  = new ArrayList<>(getAllProduct());
 
             if (lista.isEmpty()) {
                 javax.swing.JOptionPane.showMessageDialog(this, "No hay datos, verifica tu escritura");
@@ -131,7 +128,7 @@ public class CheckStockWindow extends javax.swing.JFrame {
                 modelo.addColumn("isAvailable");
                
 
-                for (Product item : lista) {
+                for (service.Product item : lista) {
 
                     Object[] fila = new Object[7]; // le pasamos la cantida de columnas
                     fila[0] = item.getId();
@@ -234,4 +231,10 @@ public class CheckStockWindow extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel1;
     private javax.swing.JScrollPane jScrollPane1;
     // End of variables declaration//GEN-END:variables
+
+    private static java.util.List<service.Product> getAllProduct() {
+        service.ProductService_Service service = new service.ProductService_Service();
+        service.ProductService port = service.getProductServicePort();
+        return port.getAllProduct();
+    }
 }

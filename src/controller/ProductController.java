@@ -55,4 +55,12 @@ public  class ProductController {
         getAllProductByQuery(); 
         
     }
+
+    private static java.util.List<service.Product> getAllProduct() {
+        service.ProductService_Service service = new service.ProductService_Service();
+        service.ProductService port = service.getProductServicePort();
+        return port.getAllProduct();
+    }
+    
+    
 }
